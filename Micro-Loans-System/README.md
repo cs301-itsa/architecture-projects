@@ -1,9 +1,10 @@
 # Project - App
 
-For architecture wise, the app requires the following services from AWS as a prerequisite
 
 ## Overview of our solution
 ![Solution View](./images/solution-view.png)
+
+For architecture wise, the app requires the following services from AWS as a prerequisite
 
 *Take note that OPTIONAL are things we did but are not necessary for the app itself*
 
