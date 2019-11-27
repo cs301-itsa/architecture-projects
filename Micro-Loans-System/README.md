@@ -1,21 +1,53 @@
-# Project
+# Project - App
 
-## Overview of our solution
-![Solution View](./images/solution-view.png)
+For architecture wise, the app requires the following services from AWS as a prerequisite
 
-This project is based on a simulated peer lending app called Minimonies developed in PHP.
+*Take note that OPTIONAL are things we did but are not necessary for the app itself*
 
-This project focuses on the system architecture rather than the app itself.
+- RDS Aurora DB
+This is a relational DB used to store the data of the loans and transactions
+Create a new instance of the DB engine, in this setup we are using AWS RDS Aurora DB
+Once setup, import the db schema from app/Database Schema SQL/MinimoniesDatabases.sql
+Take note of the DB endpoints
+[OPTIONAL] Read Replica
 
-Please refer to the report for more details on the implementation of the system architecture.
+- API Gateway
+Start a new API gateway from AWS
+app/API Schema/Export as Swagger.json -> import this schema to build the gateway 
+need to change individual main endpoints to the microservice instance or LB
+[OPTIONAL] Custom Domain, ACM Cert as Edge Optimised
 
-We had a good run, and pardon for the messy codes. If we had more time we would have tidy it up and have a more coherent coding style.
-PS: we are just starting out in the Software Dev track.
+- DynamoDB
+This is a non relational DB to help store the session data via the AWS PHP SDK
+Create a new table called "sessions"
 
-Awesome team to work with.
-
-Special thanks to Professor Ouh Eng Lieh for never making a single class boring during the entire term. 
-It has always been fun and interesting and most importantly, the emphasis was always on the learning portion. 
+- SQS
+Create a queue called "Minimonies", take note of the ARN
 
 
-Cheerio. Regards.
+This folder contains mainly 2 folders that are required to get the base of the app running.
+
+- App
+Inside this folder is the root to the codes to the webapp. It can be deployed to any server running Apache + PHP 7.2 or above.
+app\App\include\common.php-> Need to update the API key to reflect the new API key to power DynamoDB
+app\App\include\dynamo_session_handler.php -> need to change the URL to reflect on the address of where the microservices are deployed to
+
+- Microservices
+Inside this folder contains multiple folder which are the root to the microservices codes that are required to power the webapp. It can be deployed to any server running Apache + PHP 7.2 or above.
+
+The following files are the location where you need to update the Access Keys and Links
+LOANS
+app\Microservices\Loans\controller\DatabaseConnector.php -> 
+
+NOTIFICATIONS
+app\Microservices\Notifications\config\composer.json
+app\Microservices\Notifications\controller\DatabaseConnector.php
+app\Microservices\Notifications\src\SESMethods.php
+app\Microservices\Notifications\src\SQSMethods.php
+
+TRANSACTIONS
+app\Microservices\Transactions\controller\DatabaseConnector.php
+
+USERS
+app\Microservices\Users\config\AWSCognitoWrapper.php
+
